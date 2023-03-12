@@ -6,9 +6,9 @@ export const IMG = '/img';
 
 export const NOTICE = 'ChatGPT обрабатывает ваш запрос, это может занять некоторое время';
 
-export const ERROR_AI = 'receive a error from the ai';
+export const ERROR_AI = 'Ошибка в работе ChatGPT';
 
-export const EMPTY_RESPONSE = 'receive a response from the ai but comes empty';
+export const EMPTY_RESPONSE = 'ChatGPT обработал ваш запрос, но ничего не ответил';
 
 export const UNREADABLE_ENV = 'Failed to read environment variable';
 
