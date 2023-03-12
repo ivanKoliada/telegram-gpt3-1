@@ -1,3 +1,5 @@
+import TelegramBot from 'node-telegram-bot-api';
+import { NOTICE, ROLE } from './constants.js';
 import { commandController } from './controller.js';
 import { Messages, generate } from './lib/openai.js';
 import { redisMethods } from './lib/redis.js';
@@ -18,23 +20,27 @@ telegram.on('message', async (msg) => {
 
   if (!messages) {
     const initialGeneration = [
-      { role: 'system', content: 'You are a helpful assistant' },
-      { role: 'user', content: msg.text },
+      { role: ROLE.SYSTEM, content: 'You are a helpful assistant' },
+      { role: ROLE.USER, content: msg.text },
     ] satisfies Messages;
 
+    const processingMessage = await telegram.sendMessage(id, NOTICE);
     const reply = await generate(initialGeneration);
+    await telegram.deleteMessage(id, processingMessage.message_id);
 
     telegram.sendMessage(id, reply);
-    set(id, [...initialGeneration, { role: 'assistant', content: reply }]);
+    set(id, [...initialGeneration, { role: ROLE.ASSISTANT, content: reply }]);
 
     return;
   }
 
-  const nextMessages = [...messages, { role: 'user', content: msg.text }] satisfies Messages;
+  const nextMessages = [...messages, { role: ROLE.USER, content: msg.text }] satisfies Messages;
+  const processingMessage = await telegram.sendMessage(id, NOTICE);
   const reply = await generate(nextMessages);
+  await telegram.deleteMessage(id, processingMessage.message_id);
 
   telegram.sendMessage(id, reply);
-  set(id, [...nextMessages, { role: 'assistant', content: reply }]);
+  set(id, [...nextMessages, { role: ROLE.ASSISTANT, content: reply }]);
 });
 
 telegram.on('text', (msg) => telegram.sendChatAction(msg.chat.id, 'typing'));

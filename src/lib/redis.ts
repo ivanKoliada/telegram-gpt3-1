@@ -1,17 +1,17 @@
-import { Messages } from "@/lib/openai.js";
-// use this import if you are running a nodejs v17 and earlier, for higher versions import without the with-fetch
-import { Redis } from '@upstash/redis/with-fetch'
-import invariant from "tiny-invariant";
+import { UNREADABLE_ENV } from '../constants.js';
+import { Messages } from '@/lib/openai.js';
+import { Redis } from '@upstash/redis/with-fetch';
+import invariant from 'tiny-invariant';
 
 const url = process.env.UPSTASH_URL;
 const token = process.env.UPSTASH_TOKEN;
 
-invariant(url, "Couldn't read the redis url enviroment variable");
-invariant(token, "Couldn't read the redis token enviroment variable");
+invariant(url, UNREADABLE_ENV);
+invariant(token, UNREADABLE_ENV);
 
 export const redis = new Redis({
   url,
-  token
+  token,
 });
 
 export async function redisMethods() {
@@ -19,26 +19,18 @@ export async function redisMethods() {
     let key = id.toString();
     try {
       const payload = await redis.get<Messages>(key);
-      return payload
+
+      return payload;
     } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
       console.log(error);
     }
   }
 
-  async function set<T extends Messages | string>(
-    id: string | number,
-    messages: T
-  ) {
+  async function set<T extends Messages | string>(id: string | number, messages: T) {
     let key = id.toString();
     try {
-      return redis.set(key, JSON.stringify(messages), { ex:  21600 }); // data expires in 6 hours 
+      return redis.set(key, JSON.stringify(messages), { ex: 3600 }); // data expires in 1 hours
     } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
       console.log(error);
     }
   }

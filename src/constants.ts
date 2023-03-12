@@ -1,13 +1,29 @@
+import { ChatCompletionRequestMessageRoleEnum } from 'openai';
+
 export const ABOUT = '/about';
 
 export const IMG = '/img';
+
+export const NOTICE = 'ChatGPT обрабатывает ваш запрос, это может занять некоторое время';
+
+export const ERROR_AI = 'receive a error from the ai';
+
+export const EMPTY_RESPONSE = 'receive a response from the ai but comes empty';
+
+export const UNREADABLE_ENV = 'Failed to read environment variable';
+
+export const ROLE: Record<string, ChatCompletionRequestMessageRoleEnum> = {
+  USER: 'user',
+  SYSTEM: 'system',
+  ASSISTANT: 'assistant',
+};
 
 export const BOT_DESCRIPTION = `
   Привет!
 
   Бот использует модель gpt-3.5-turbo.
 
-  Чатбот умеет:
+  Бот умеет:
   - Отвечать на вопросы
   - Писать и редактировать тексты
   - Переводить с любого языка на любой

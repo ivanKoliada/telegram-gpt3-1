@@ -1,4 +1,4 @@
-import { ABOUT, IMG, BOT_DESCRIPTION } from './constants.js';
+import { ABOUT, IMG, BOT_DESCRIPTION, NOTICE } from './constants.js';
 import { generateImage } from './lib/openai.js';
 import { telegram } from './lib/telegram.js';
 
@@ -11,7 +11,10 @@ export const commandController = async (id: number, msg: string) => {
       return null;
     case IMG:
       const descriptionImage = description.join(' ');
+
+      const processingMessage = await telegram.sendMessage(id, NOTICE);
       const image = await generateImage(descriptionImage);
+      await telegram.deleteMessage(id, processingMessage.message_id);
 
       image && (await telegram.sendPhoto(id, image));
       return null;

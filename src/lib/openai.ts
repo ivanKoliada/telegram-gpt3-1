@@ -1,12 +1,13 @@
 import { type CreateChatCompletionRequest, Configuration, OpenAIApi } from 'openai';
 import invariant from 'tiny-invariant';
 import 'dotenv/config';
+import { EMPTY_RESPONSE, ERROR_AI, UNREADABLE_ENV } from '../constants.js';
 
 export type Messages = CreateChatCompletionRequest['messages'];
 
 const apiKey = process.env.OPENAI_API_KEY;
 
-invariant(apiKey, "Couldn't read the openai apiKey url environment variable");
+invariant(apiKey, UNREADABLE_ENV);
 
 const configuration = new Configuration({
   apiKey,
@@ -25,9 +26,9 @@ export async function generate(messages: Messages): Promise<string> {
 
     const reply = payload?.message && payload.message.content;
 
-    return reply ? reply : 'receive a response from the ai but comes empty';
+    return reply ? reply : EMPTY_RESPONSE;
   } catch (error) {
-    return 'receive a error from the ai';
+    return ERROR_AI;
   }
 }
 
@@ -43,8 +44,8 @@ export async function generateImage(message: string): Promise<string> {
 
     const urlData = response.data.data[0].url;
 
-    return urlData ? urlData : 'receive a response from the ai but comes empty';
+    return urlData ? urlData : EMPTY_RESPONSE;
   } catch (error) {
-    return 'receive a error from the ai';
+    return ERROR_AI;
   }
 }
