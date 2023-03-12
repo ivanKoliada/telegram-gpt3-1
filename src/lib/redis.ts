@@ -29,7 +29,7 @@ export async function redisMethods() {
   async function set<T extends Messages | string>(id: string | number, messages: T) {
     let key = id.toString();
     try {
-      return redis.set(key, JSON.stringify(messages), { ex: 3600 }); // data expires in 1 hours
+      return redis.set(key, JSON.stringify(messages), { ex: 1800 }); // data expires in half hour
     } catch (error) {
       console.log(error);
     }
